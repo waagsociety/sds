@@ -1,7 +1,13 @@
 #contains list of uri's / query to public documents
 #contains design documents for this context
-class SharedDataContext < CouchRest::Model::Base
-  unique_id :id
-  # property <name>
+#reused by multiple shared applications
+
+class SharedDataContext  < CouchRest::Model::Base
+
+   unique_id :id
+   property :name, String
+   property :public_validation: String #Design document json
+   property :private_validation: String #Design document json
+   property :anonimzation: String #Design document json, contains js anon function
   
 end

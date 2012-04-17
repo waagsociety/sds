@@ -1,8 +1,8 @@
-#has name, names/uri is referenced in PersonalContextAuthorization
-#name/uri will also be used in oauth.
 #this is a scope definition
-class PersonalContextAuthorizationScope < CouchRest::Model::Base
-  unique_id :id
-  # property <name>
+class PersonalContextAuthorizationScope
+include CouchRest::Model::Embeddable
+  property :name, String #e.g. taxi_public_readonly, taxi_private_readwrite, to be used by openauth
+  property :operations, [String] #crud
+  property :accessLevel, String #public/private
   
 end

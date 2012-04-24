@@ -1,6 +1,7 @@
+# this is the resource owner!
 class Account < CouchRest::Model::Base
   attr_accessor :password, :password_confirmation
-
+	
   # Properties
   property :name
   property :surname

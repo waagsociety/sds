@@ -1,4 +1,6 @@
 # this is the resource owner!
+
+require 'personal_store.rb'
 class Account < CouchRest::Model::Base
   attr_accessor :password, :password_confirmation
 	

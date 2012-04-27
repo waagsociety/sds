@@ -1,5 +1,6 @@
 require 'teststrap.rb'
 require 'authorizationstate'
+require 'pp'
 
 #application is setup with access to context: taxi_data
 #application is tested for succesfull access to taxi_data
@@ -75,11 +76,51 @@ context "taxi client initiates authorization request" do
 	#assert the state is pending
 	asserts("pca pending"){topic.state == AuthorizationState::PENDING_REQUEST}
 	asserts("pca has request token"){topic.request_token != nil}
+
+
+	# 2. assume logged in user, change state of personal_context_authorization; using grant/deny defs; update authorization state
+	hookup do
+		#1. create and save account
+
+		u = Account.find_by_email("taco@waag.org")
+
+		puts "account found"
+		
+		topic.state == AuthorizationState::ACCESS_GRANTED
+		topic.resource_owner = u
+		topic.save
+		puts "topic saved"
+
+
+		store = PersonalStore.new(:account => u)
+		store.save			
+		puts "store created"
+
+		pc = PersonalContext.new
+		pc.authorizations << topic
+		
+		pc.context = topic.scope.context
+		store.contexts << pc
+		
+		#add a document to the store, which should be saved in its own database
+		store.save
+		puts "store uri: #{store.uri}" 
+
+		doc = store.personal_documents.new(:context =>topic.scope.context, :date => DateTime.now, :body => "blablabla_encrypted")
+		doc.save
+		puts "find document: #{doc.uri}"
+		#doc = store.personal_documents.by_date.first	
+		#puts "doc uri: #{doc.uri}"
+		#b = store.personal_documents.by_date.first	
+		#puts "b: #{b}"
+		
+		 
+	end
+
+	#3. validate access to personal context by application
 	
 end
  
-# 2. assume logged in user, change state of personal_context_authorization; using grant/deny defs; update authorization state
-# 3. find authorization by access_token/userid/granted_state combination, for a given user
 
 
 #then in other unit test, expand this to oauth scenario using server requests etc.:

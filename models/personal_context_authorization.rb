@@ -24,16 +24,6 @@ class PersonalContextAuthorization < CouchRest::Model::Base
    
 end
 
-#checks for expiration, validity of scope, grantee and owner, 
-#can only be called by the logged in end user
-#updates state to GRANTED
-def grant
-end
-
-#updates state to DENIED
-def deny
-end
-
 #scenario:
 #1. application requests context authorization for specific context, scope and user
 #2. personal context authorization is created, state = request, request token is returned

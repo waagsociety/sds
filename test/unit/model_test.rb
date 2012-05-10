@@ -73,8 +73,6 @@ context "taxi client initiates authorization request" do
 
 	asserts_topic.kind_of(PersonalContextAuthorization)
 	asserts("pca saved"){!topic.new?}
-	#assert the state is pending
-	asserts("pca pending"){topic.state == AuthorizationState::PENDING_REQUEST}
 	asserts("pca has request token"){topic.request_token != nil}
 
 
@@ -82,11 +80,11 @@ context "taxi client initiates authorization request" do
 	hookup do
 		#1. create and save account
 
-		u = Account.find_by_email("taco@waag.org")
+		u = Account.find_by_email("taco+developer@waag.org")
 
 		puts "account found"
 		
-		topic.state == AuthorizationState::ACCESS_GRANTED
+		topic.state = AuthorizationState::ACCESS_GRANTED
 		topic.resource_owner = u
 		topic.save
 		puts "topic saved"
@@ -104,21 +102,21 @@ context "taxi client initiates authorization request" do
 		
 		#add a document to the store, which should be saved in its own database
 		store.save
-		puts "store uri: #{store.uri}" 
 
 		doc = store.personal_documents.new(:context =>topic.scope.context, :date => DateTime.now, :body => "blablabla_encrypted")
 		doc.save
-		puts "find document: #{doc.uri}"
-		#doc = store.personal_documents.by_date.first	
-		#puts "doc uri: #{doc.uri}"
-		#b = store.personal_documents.by_date.first	
-		#puts "b: #{b}"
 		
-		 
 	end
 
-	#3. validate access to personal context by application
-	
+	#3. validate access to store/personal_context by application
+	#find the shared data application that was saved earlier
+	u = Account.find_by_email("taco+developer@waag.org")
+	asserts("user exists"){u != nil}
+	store = PersonalStore.find_by_account_id(u.id)
+	asserts("store exists"){store != nil}
+	app = SharedDataApplication.find_by_name("taxiapp")
+	asserts("app exists"){app != nil}
+	asserts("access to docs"){store.list(app,app.shared_data_contexts.first.name).length > 0} #should return something
 end
  
 
@@ -127,4 +125,3 @@ end
 #1. application requests request_token for user context identifier/scope combination, receives expiring request_token
 #2. redirected user grants/denies access_request, with provided request token
 #3. application requests access with access_token (is denied/granted)
-

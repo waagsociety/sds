@@ -1,11 +1,16 @@
 #contains list of uris to shared_data_contexts, that it is authorized to access
+
+require 'account.rb'
 class SharedDataApplication < CouchRest::Model::Base
 
   unique_id :id
   property :name, String
   property :description, String
   collection_of :shared_data_contexts
+  property :owner, Account
 
+  view_by :name
+  view_by :account
   #check if context is part of the shared_data_contexts collection
   
   #TODO: change check to the private internal id of the application instead, 

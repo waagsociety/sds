@@ -1,0 +1,23 @@
+#block-text.block
+  .content
+    %h2.title= "Hi Developer #{@account.name} (#{@account.email})" 
+    .inner
+      %p.first
+        :plain
+          Use this page to register and manage your applications and contexts<br/><br/> 
+          Step 1 is to discover or create a data context that is suitable for your application.<br/><br/> 
+          Step 2 is to create an application definition that consumes the data of a given context.<br/> 
+      %p  
+      %hr
+      %p
+        :markdown
+          **List of contexts**
+        =partial("contexts/index")
+        %li=link_to pat("New context"), url(:contexts, :new)
+        //create new context
+	
+        %br/
+      %p
+        :markdown
+          **List of applications**
+

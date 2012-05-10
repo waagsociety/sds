@@ -1,0 +1,58 @@
+.group
+  =f.label :name
+  =f.error_message_on :name
+  =f.text_field :name, :class => :text_field
+  %span.description Unique name of the shared data context 
+  %br
+  %br
+
+  .group
+    =f.label "public validaton function"
+    =f.error_message_on :public_validation
+    =f.text_area :public_validation, :class => :text_area, :rows => 8
+    %span.description A couchdb js validation function Ex:<pre>
+    require("name");
+    require("created_at");
+    require("comment", "You may not leave an empty comment"); 
+  </pre>
+
+ 
+  .group
+    =f.label "anonimization function"
+    =f.error_message_on :anonimization 
+    =f.text_area :anonimization, :class => :text_area, :rows => 8
+    %span.description A couchdb show function Ex:<pre>
+    function(doc, req) {
+    return doc.name;
+    }  
+  </pre>
+
+  .group
+    =f.label "private validaton function"
+    =f.error_message_on :private_validation 
+    =f.text_area :private_validation, :class => :text_area, :rows => 8
+    %span.description A couchdb js validation function Ex:<pre>
+    require("name");
+    require("created_at");
+    require("comment", "You may not leave an empty comment"); 
+  </pre>
+ 
+
+
+//
+//.group
+//  =f.label :password_confirmation
+//  =f.error_message_on :password_confirmation
+//  =f.password_field :password_confirmation, :class => :password_field
+//  %span.description Ex: a simple text
+//
+//.group
+//  =f.label :rolletje
+//  =f.error_message_on :role
+//  =f.select :role, :options => access_control.roles
+//  %span.description Ex: a simple text
+
+
+.group.navform.wat-cf
+  =f.submit pat(:save), :class => :button
+  =f.submit pat(:cancel), :onclick => "window.location='#{url(:developers, :index)}';return false", :class => :button

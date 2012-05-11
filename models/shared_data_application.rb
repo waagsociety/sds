@@ -7,12 +7,18 @@ class SharedDataApplication < CouchRest::Model::Base
   property :name, String
   property :description, String
   collection_of :shared_data_contexts
-  property :owner, Account
+  property :account, Account
 
   view_by :name
   view_by :account
   #check if context is part of the shared_data_contexts collection
-  
+
+   # Validations
+   validates_presence_of     :name, :description
+   validates_uniqueness_of   :name
+ 
+
+
   #TODO: change check to the private internal id of the application instead, 
   #the application id should never be visible outside the application
   #change;   

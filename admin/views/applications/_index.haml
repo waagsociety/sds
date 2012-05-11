@@ -1,0 +1,23 @@
+//applications for the logged in user
+.block
+  .content
+    .inner
+      %table.table
+        %th.first=mat(:application, :id)
+        %th=mat(:application, :name)
+        %th=mat(:application, :context)
+        %th.last="&nbsp;"
+        %tr
+        -@applications.each do |application|
+          %tr
+            %td.first=application.id
+            %td=application.name
+            %td=application.shared_data_contexts.first.name
+            %td.last
+              =button_to pat(:edit), url(:applications, :edit, :id => application.id), :method => :get, :class => :button_to
+              ="|"
+              =button_to pat(:delete), url(:applications, :destroy, :id => application.id), :method => :delete, :class => :button_to, :onsubmit => "return confirm('#{pat(:confirm)}')"
+      .actions-bar.wat-cf
+        .actions="&nbsp;"
+.name
+

@@ -6,7 +6,7 @@ Admin.controllers :developers do
     
     @contexts = SharedDataContext.all #TODO: you can only edit/delete the ones that you manage..
 
-    @apps = SharedDataApplication.by_account(:account => @account.id, :descending => true)
+    @applications = SharedDataApplication.by_account(:account => @account.id, :descending => true)
     render "developer/index"
   end
 end

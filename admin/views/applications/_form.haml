@@ -1,0 +1,23 @@
+.group
+  =f.label :name
+  =f.error_message_on :name
+  =f.text_field :name, :class => :text_field
+  %span.description Unique name of the shared data application 
+  %br
+
+.group
+  =f.label :description
+  =f.error_message_on :description
+  =f.text_area :description, :class => :text_area, :rows => 8
+  %span.description Description of the shared data application 
+  %br
+
+.group
+  =f.error_message_on :context
+  =f.select_block     "context", :options => @contexts
+  %span.description Context name of the shared data application 
+
+
+.group.navform.wat-cf
+  =f.submit pat(:save), :class => :button
+  =f.submit pat(:cancel), :onclick => "window.location='#{url(:developers, :index)}';return false", :class => :button

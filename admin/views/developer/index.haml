@@ -14,10 +14,13 @@
           **List of contexts**
         =partial("contexts/index")
         %li=link_to pat("New context"), url(:contexts, :new)
-        //create new context
 	
         %br/
       %p
         :markdown
           **List of applications**
+        =partial("applications/index")
+        %li=link_to pat("New application"), url(:applications, :new)
+	
+        %br/
 

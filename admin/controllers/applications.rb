@@ -1,5 +1,4 @@
 #applications controller
-
 Admin.controllers :applications do
 
 	#get :index do
@@ -17,7 +16,11 @@ Admin.controllers :applications do
 	post :create do
 	    @application = SharedDataApplication.new
 	    @application.name = params[:shared_data_application][:name]
+	    @application.url = params[:shared_data_application][:url]
+	    @application.redirect_url = params[:shared_data_application][:redirect_url]
 	    @application.description = params[:shared_data_application][:description]
+	    @application.secret = SecureRandom.hex(11)
+
 	    if(@application.save)
 	    	puts "saved stage 1"
 	    end
@@ -48,6 +51,7 @@ Admin.controllers :applications do
         get :edit, :with => :id do
           @application = SharedDataApplication.get(params[:id])
 	  @contexts = @application.shared_data_contexts.collect!{|c|c.name}
+	  puts @application.secret
           render 'applications/edit'
         end
       

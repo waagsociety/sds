@@ -26,10 +26,12 @@ end
 
 #scenario:
 #1. application requests context authorization for specific context, scope and user
-#2. personal context authorization is created, state = request, request token is returned
-#3. application redirects user with request token
-#4. user grants or denies token, (if within the request expiration date), else state is updated to expired
-#5. if granted, state is updated to granted, access_token is returned, with access_expiration
+#2. user grants or denies request
+#2. if grant, personal context authorization is created, state = request, request token is returned
+#3. system redirects user to application redirect url with request token
+#5. application swaps request token for access-token with application secret
 #6. status can be updated by user to revoked at any time.
+#
+#see https://developers.google.com/accounts/docs/OAuth2#webserver
 
 

@@ -24,7 +24,8 @@ class Admin < Padrino::Application
   set :login_page, "/admin/sessions/new"
 
   enable  :sessions
-  disable :store_location
+  disable :store_location #we do this manually
+
 
   access_control.roles_for :any do |role|
     role.protect "/"

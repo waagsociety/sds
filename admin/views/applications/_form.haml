@@ -6,6 +6,21 @@
   %br
 
 .group
+  =f.label :url
+  =f.error_message_on :url
+  =f.text_field :url, :class => :text_field
+  %span.description Main (support) URL of the application website
+  %br
+
+.group
+  =f.label :redirect_url
+  =f.error_message_on :redirect_url
+  =f.text_field :redirect_url, :class => :text_field
+  %span.description Redirect URL for the oauth process. 
+  %br
+
+
+.group
   =f.label :description
   =f.error_message_on :description
   =f.text_area :description, :class => :text_area, :rows => 8

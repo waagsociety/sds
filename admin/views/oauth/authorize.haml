@@ -1,0 +1,19 @@
+.block-text.block
+  .content
+    %h2.title= "Hi citizen #{@account.name} (#{@account.email})" 
+    .inner
+      %p.first
+        %p.question= "Application '#{@application.name}' is asking for permission for read-write / private access to context: #{@context.name} "
+      %p.description= " #{@context.name}: #{@application.description}"
+      %p.example= "Data collected in this context conforms to:<br/>"
+      %textarea(rows="8" cols="60")= "#{@context.private_validation}"
+      %hr
+
+      -form_for :application, url(:authorization, :create), :class => :form do |f|
+        .group.navform.wat-cf
+          =f.submit pat(:grant), :class => :button
+          =f.submit pat(:deny), :onclick => "window.location='#{url(:base, :index)}';return false", :class => :button
+
+
+//grant
+//deny

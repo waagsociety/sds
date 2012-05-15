@@ -6,6 +6,7 @@
         %th.first=mat(:application, :id)
         %th=mat(:application, :name)
         %th=mat(:application, :context)
+        %th=mat(:application, :secret)
         %th.last="&nbsp;"
         %tr
         -@applications.each do |application|
@@ -13,6 +14,7 @@
             %td.first=application.id
             %td=application.name
             %td=application.shared_data_contexts.first.name
+            %td=application.secret
             %td.last
               =button_to pat(:edit), url(:applications, :edit, :id => application.id), :method => :get, :class => :button_to
               ="|"

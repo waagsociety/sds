@@ -43,7 +43,9 @@ Admin.controllers :authorization do
 		
 		
 		#check if a validation for the user/context/application combination already exists..
+		#TODO:check if pca gets saved in multiple documents?
 		pca = pc.authorizations.find_all{ |item| item.client_id == @application.id && item.scope.context == @context.name }.last
+		
 		if(pca == nil)
 			#if not create new validation with request_token as output
 			pca = PersonalContextAuthorization.new(

@@ -4,6 +4,7 @@ Sdsapp.controllers :base do
     "SHARED DATA SERVICE"
   end
 
+  #redirects users to the admin authorization controller behind the login
   get 'oauth/authorize', :map => '/admin/oauth/authorize' do
 	  #store parameters in session
 	  session[:oauth_client_id] = params[:client_id] #save arguments in session

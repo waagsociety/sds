@@ -15,13 +15,16 @@ class PersonalContextAuthorization < CouchRest::Model::Base
   property :scope, PersonalContextAuthorizationScope
   
   #oauth properties
-  #self.token = ActiveSupport::SecureRandom.hex(11)
   property :access_token, String
   property :request_token, String
   property :request_expiration, Date
   property :access_expiration, Date
   property :state, Fixnum 
    
+  view_by :request_token
+  view_by :access_token
+
+  #TODO: validates uniqueness of tokens
 end
 
 #scenario:

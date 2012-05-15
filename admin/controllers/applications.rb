@@ -57,11 +57,21 @@ Admin.controllers :applications do
       
         put :update, :with => :id do
           @application = SharedDataApplication.get(params[:id])
+	  #puts @application.account.name
+
 	  @contexts = @application.shared_data_contexts.collect!{|c|c.name}
-          if @application.update_attributes(params[:shared_data_application])
-            flash[:notice] = 'Shared Data Context was successfully updated.'
+
+	  @application.name = params[:shared_data_application][:name]
+	  @application.url = params[:shared_data_application][:url]
+	  @application.redirect_url = params[:shared_data_application][:redirect_url]
+	  @application.description = params[:shared_data_application][:description]
+	  @application.account = current_account
+	  
+	  if @application.update
+            flash[:notice] = 'Shared Data Application was successfully updated.'
             redirect url(:applications, :edit, :id => @application.id)
           else
+	    flash[:error] = "#{@application.errors.first}" 
             render 'applications/edit'
           end
         end

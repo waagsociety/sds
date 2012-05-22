@@ -55,4 +55,22 @@ Sdsapp.controllers :api do
 		end
 
 	end
+
+	get 'all' do
+		token = env["HTTP_AUTHORIZATION"].split.last
+		pca = PersonalContextAuthorization.find_by_access_token(token)
+
+		if(pca != nil && pca.state == AuthorizationState::ACCESS_GRANTED)
+			store = PersonalStore.find_by_account_id(pca.resource_owner_id)
+			application = SharedDataApplication.get(pca.client_id)
+		        list = store.list(application, pca.scope.context)
+			response = ""
+			list.each do |doc|
+				response << "#{doc.first}\n"
+			end
+			return response
+		else
+			"no valid token"#TODO: appropriate error
+		end
+	end
 end

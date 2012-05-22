@@ -4,8 +4,8 @@ Admin.controllers :authorization do
 
 	get :index, :map => 'oauth/authorize/' do
 		@account = current_account
-		
 		@application = SharedDataApplication.get(session[:oauth_client_id])
+		#TODO:throw appriopriate error if no client id is provided
 		@context = @application.shared_data_contexts.first		
 		#TODO: validate provided redirect_uri client_id and scope
 		#TODO: save scope as level and operations with application
@@ -31,11 +31,12 @@ Admin.controllers :authorization do
 		end
 		
 		#check if the personal context exists in the current store, if not create and add it
-		pc = store.contexts.find_all{ |item| item.context == @context.name}.last
+		pc = store.personal_contexts.find_all{ |item| item.context == @context.name}.last
 		if(pc == nil)
 			pc = PersonalContext.new
 			pc.context = @context.name
-			store.contexts << pc
+			pc.save
+			store.personal_contexts << pc
 			store.save
 		else
 			puts "reusing context"
@@ -44,7 +45,7 @@ Admin.controllers :authorization do
 		
 		#check if a validation for the user/context/application combination already exists..
 		#TODO:check if pca gets saved in multiple documents?
-		pca = pc.authorizations.find_all{ |item| item.client_id == @application.id && item.scope.context == @context.name }.last
+		pca = pc.personal_context_authorizations.find_all{ |item| item.client_id == @application.id && item.scope.context == @context.name }.last
 		
 		if(pca == nil)
 			#if not create new validation with request_token as output
@@ -60,7 +61,7 @@ Admin.controllers :authorization do
 			)
 			#state stays pending until token is swapped
 			pca.save
-			pc.authorizations << pca 
+			pc.personal_context_authorizations << pca 
 			store.save
 		else
 			puts "reusing authorization"

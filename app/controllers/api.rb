@@ -37,23 +37,20 @@ Sdsapp.controllers :api do
 	#the token indicates the application, context etc
 	post 'store' do
 		token = env["HTTP_AUTHORIZATION"].split.last
-		document = params.first
 		
+		#make json can parse the data as a hash
+		document = params.first.first
+		data = JSON.parse document
+		#puts data
+
 		pca = PersonalContextAuthorization.find_by_access_token(token)
 
 		if(document != nil && pca != nil && pca.state == AuthorizationState::ACCESS_GRANTED)
-			
-			#actually store the document
-			#TODO: make sure the doucment is validated
 			store = PersonalStore.find_by_account_id(pca.resource_owner_id)
-		        doc = store.personal_documents.new(:context =>pca.scope.context, :date => DateTime.now, :body => document)
-			doc.save	
-
-			"store success"
+			store.save data, pca.scope.context
 		else
 			"no valid token" #TODO: appropriate error
 		end
-
 	end
 
 	get 'all' do

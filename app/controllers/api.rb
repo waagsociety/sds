@@ -47,7 +47,22 @@ Sdsapp.controllers :api do
 
 		if(document != nil && pca != nil && pca.state == AuthorizationState::ACCESS_GRANTED)
 			store = PersonalStore.find_by_account_id(pca.resource_owner_id)
-			store.save data, pca.scope.context
+			id = store.persist(data, pca.scope.context)
+
+			#get anonymized version of the document
+			puts "get anonimized id: #{id}"
+			anonimized_data = store.anonimize(pca.scope.context,id)
+			
+			#get reference to the context store
+			sdc = SharedDataContext.find_by_name pca.scope.context
+			cstore = ContextStore.find_by_shared_data_context_id sdc
+			if(cstore == nil)
+				cstore = ContextStore.new(:shared_data_context => sdc)
+				cstore.save #save the store document
+			end
+
+			cstore.persist anonimized_data	#save some public data in the context store
+
 		else
 			"no valid token" #TODO: appropriate error
 		end
@@ -63,11 +78,22 @@ Sdsapp.controllers :api do
 		        list = store.list(application, pca.scope.context)
 			response = ""
 			list.each do |doc|
-				response << "#{doc.first}\n"
+				response << "#{doc}\n"
 			end
 			return response
 		else
 			"no valid token"#TODO: appropriate error
 		end
+	end
+
+	get 'context/:name' do
+		sdc = SharedDataContext.find_by_name(params[:name])
+		cstore = ContextStore.find_by_shared_data_context_id sdc
+		list = cstore.list
+		response = ""
+		list.each do |doc|
+			response << "#{doc}\n"
+		end
+		return response
 	end
 end

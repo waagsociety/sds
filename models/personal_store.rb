@@ -20,14 +20,21 @@ class PersonalStore < CouchRest::Model::Base
   #create the proxy database
   #use this manually
   def proxy_database
+	#TODO: refactor to yml or something
 	#this creates the personal database if it doesn't exist
 	CouchRest.database! "http://taco:couchdb@localhost:5984/ps_#{id}"
+  end
+
+  #gets the anonimized version of a document in the personal store
+  #provided id must be present in the context
+  def anonimize(context,doc_id)
+	doc = proxy_database.view("#{context}/anonimization",:key => doc_id)["rows"].first["value"]
   end
 
   #store method
   #validates validation and anonimization are in place
   #expects data as hash
-  def save(data,context)
+  def persist(data,context)
 	sc = SharedDataContext.find_by_name context  #not very efficient
 	update_design_for sc	
 	
@@ -48,6 +55,7 @@ class PersonalStore < CouchRest::Model::Base
 	begin
 		puts "saving personal document"
 		pd.save false
+		return pd["_id"]
 	rescue => e
 		puts "NOT SAVED: #{e.response}"
 		#TODO: properly handle this stuff
@@ -75,6 +83,8 @@ class PersonalStore < CouchRest::Model::Base
 			design[:views] = Hash.new
 			design[:views][:anonimization] = Hash.new
 			design[:views][:anonimization][:map] = shared_context.anonimization
+			design[:views][:all] = Hash.new
+			design[:views][:all][:map] = "function(doc) {if (doc['type'] == '#{shared_context.name}') {emit(doc);}}"
 			puts "saving design doc"
 			design.save
 		end
@@ -109,10 +119,8 @@ class PersonalStore < CouchRest::Model::Base
 			#third check if the scope of the authorization contains the read scope
 			if(auth.scope.level.include?("private") && auth.scope.operations.include?("read"))
 				
-				docs = self.personal_documents.by_context(:context => context, :descending => true)
-				bodies = docs.each.collect {|doc| doc.body}
-				return bodies 
-
+				docs = proxy_database.view("#{context.context}/all")["rows"]
+				return docs 
 			else
 				raise StoreAuthenticationError, "Specified client not authorized for personal read scope"
 			end

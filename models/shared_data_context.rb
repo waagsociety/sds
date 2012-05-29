@@ -14,5 +14,6 @@ class SharedDataContext  < CouchRest::Model::Base
    # Validations
    validates_presence_of     :name, :public_validation, :private_validation, :anonimization
    validates_uniqueness_of   :name
-  
+
+   view_by :name  
 end

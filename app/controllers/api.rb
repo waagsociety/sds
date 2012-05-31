@@ -23,12 +23,13 @@ Sdsapp.controllers :api do
 			#let's swap and return the access code
 			pca.state = AuthorizationState::ACCESS_GRANTED
 			pca.save
-			return "{ \"access_token\": \"#{pca.access_token}\" }" #TODO:return expiry/refresh stuff	
+			return "{ \"access_token\": \"#{pca.access_token}\" }" 
+			#TODO:return expiry/refresh stuff	
 		else
-			puts 'swap error, personal context authorization not valid'
+		 	halt 422, "invalid or outdated  authorization request"	
 		end
 	  else 
-	        puts 'swap error, illegal client'
+		halt 422, "invalid request"
 	  end
 	end
 
@@ -50,7 +51,6 @@ Sdsapp.controllers :api do
 			id = store.persist(data, pca.scope.context)
 
 			#get anonymized version of the document
-			puts "get anonimized id: #{id}"
 			anonimized_data = store.anonimize(pca.scope.context,id)
 			
 			#get reference to the context store
@@ -64,7 +64,7 @@ Sdsapp.controllers :api do
 			cstore.persist anonimized_data	#save some public data in the context store
 
 		else
-			"no valid token" #TODO: appropriate error
+			halt 422, "no valid token" 
 		end
 	end
 
@@ -82,18 +82,22 @@ Sdsapp.controllers :api do
 			end
 			return response
 		else
-			"no valid token"#TODO: appropriate error
+			halt 422, "no valid token"
 		end
 	end
 
 	get 'context/:name' do
 		sdc = SharedDataContext.find_by_name(params[:name])
-		cstore = ContextStore.find_by_shared_data_context_id sdc
-		list = cstore.list
-		response = ""
-		list.each do |doc|
-			response << "#{doc}\n"
+		if(sdc != nil)
+			cstore = ContextStore.find_by_shared_data_context_id sdc
+			list = cstore.list
+			response = ""
+			list.each do |doc|
+				response << "#{doc}\n"
+			end
+			return response
+		else
+			halt 404, "context not found"
 		end
-		return response
 	end
 end

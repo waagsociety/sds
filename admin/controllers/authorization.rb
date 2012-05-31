@@ -1,16 +1,13 @@
 #oauth authorization controller
-
 Admin.controllers :authorization do
 
 	get :index, :map => 'oauth/authorize/' do
 		@account = current_account
 		@application = SharedDataApplication.get(session[:oauth_client_id])
-		#TODO:throw appriopriate error if no client id is provided
 		@context = @application.shared_data_contexts.first		
+		#TODO: show appriopriate error message (redirect 404) if no client id is provided
 		#TODO: validate provided redirect_uri client_id and scope
-		#TODO: save scope as level and operations with application
 		#TODO: validate that tokenized scope argument is the same
-		#@application.redirect_uri == session[:oauth_redirect_uri]
 
 		render 'oauth/authorize'
 	end

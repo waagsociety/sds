@@ -1,0 +1,29 @@
+.group
+  =f.label :name
+  =f.error_message_on :name
+  =f.text_field :name, :class => :text_field
+
+.group
+  =f.label :surname
+  =f.error_message_on :surname
+  =f.text_field :surname, :class => :text_field
+
+.group
+  =f.label :email
+  =f.error_message_on :email
+  =f.text_field :email, :class => :text_field
+
+.group
+  =f.label :password
+  =f.error_message_on :password
+  =f.password_field :password, :class => :password_field
+
+.group
+  =f.label :password_confirmation
+  =f.error_message_on :password_confirmation
+  =f.password_field :password_confirmation, :class => :password_field
+
+
+.group.navform.wat-cf
+  =f.submit "Sign up", :class => :button
+  =f.submit "Cancel", :onclick => "window.location='#{url(:signup, :index)}';return false", :class => :button

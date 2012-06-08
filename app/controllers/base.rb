@@ -1,7 +1,8 @@
 Sdsapp.controllers :base do
 
   get :index, :map => "/" do
-    "SHARED DATA SERVICE"
+    #"SHARED DATA SERVICE"
+	  redirect url("/admin")
   end
 
   #redirects users to the admin authorization controller behind the login

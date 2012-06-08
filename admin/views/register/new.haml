@@ -1,0 +1,9 @@
+.block
+  .secondary-navigation
+  .content
+    %h2.title
+      Sign up for Developer Account 
+      .inner
+      -form_for :account, url(:register, :create), :class => :form do |f|
+        =partial "register/form", :locals => { :f => f }
+

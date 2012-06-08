@@ -1,0 +1,9 @@
+.block
+  .secondary-navigation
+  .content
+    %h2.title
+      Sign up for Personal Store
+      .inner
+      -form_for :account, url(:signup, :create), :class => :form do |f|
+        =partial "signup/form", :locals => { :f => f }
+

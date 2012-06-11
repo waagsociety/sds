@@ -1,0 +1,27 @@
+#block-text.block
+  .content
+    %h2.title= "Hi Store Owner #{@account.name} (#{@account.email})" 
+    .inner
+      %p.first
+        :plain
+          Use this page to manage access to your data contexts<br/><br/> 
+      %p  
+        :markdown
+          **List of data contexts and granted applications**
+        .block
+          .content
+            .inner
+              %table.table
+                %th.first=mat(:context, :name)
+                %th=mat(:context, 'active applications')
+                %th.last="&nbsp;"
+                %tr
+                  -@contexts.each do |context|
+                    -context.personal_context_authorizations.each do |pca|
+                      -if pca.state != 2 
+                        - next 
+                      -client = SharedDataApplication.get(pca.client_id)
+                      %tr
+                        %td.first=context.context
+                        %td
+                          =client.name

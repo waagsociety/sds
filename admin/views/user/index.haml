@@ -13,15 +13,30 @@
             .inner
               %table.table
                 %th.first=mat(:context, :name)
-                %th=mat(:context, 'active applications')
+                %th=mat(:context, 'application')
+                %th=mat(:context, 'status')
+                %th=mat(:context, 'action')
                 %th.last="&nbsp;"
                 %tr
                   -@contexts.each do |context|
                     -context.personal_context_authorizations.each do |pca|
-                      -if pca.state != 2 
-                        - next 
                       -client = SharedDataApplication.get(pca.client_id)
                       %tr
                         %td.first=context.context
                         %td
                           =client.name
+                        %td
+                          -if pca.state == 2
+                            granted
+                          -elsif pca.state == 3 
+                            revoked
+                          -else
+                            =pca.state
+                        %td
+                          -if pca.state == 2 
+                            =button_to pat(:revoke), url(:users, :revoke, :id => pca.access_token), :method => :put, :class => :button_to, :onsubmit => "return confirm('#{pat(:confirm)}')"
+                          -else
+                            =button_to pat(:grant), url(:users, :grant, :id => pca.access_token), :method => :put, :class => :button_to, :onsubmit => "return confirm('#{pat(:confirm)}')"
+      .actions-bar.wat-cf
+        .actions="&nbsp;"
+

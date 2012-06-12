@@ -3,7 +3,11 @@ Admin.controllers :users do
   get :index, :map => "/users" do
 	@account = current_account
 	store = PersonalStore.find_by_account_id(@account.id)
-	@contexts = store.personal_contexts
+	if(store != nil)
+		@contexts = store.personal_contexts
+	else
+		@contexts = Array.new
+	end
 	render 'user/index'
   end
 

@@ -28,6 +28,14 @@
   %br
 
 .group
+  =f.label :public_key
+  =f.error_message_on :public_key
+  =f.text_area :public_key, :class => :text_area, :rows => 8
+  %span.description Public key of the shared data application 
+  %br
+
+
+.group
   =f.error_message_on :context
   =f.select_block     "context", :options => @contexts
   %span.description Context name of the shared data application 

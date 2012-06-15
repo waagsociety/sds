@@ -31,6 +31,14 @@ class PersonalStore < CouchRest::Model::Base
 	doc = proxy_database.view("#{context}/anonimization",:key => doc_id)["rows"].first["value"]
   end
 
+  def update(id,new_data)
+	orig_data = proxy_database.get(id)
+	new_data.each do | key,value |
+		orig_data[key] = new_data[key]
+	end
+	orig_data.save false	
+  end
+
   #store method
   #validates validation and anonimization are in place
   #expects data as hash

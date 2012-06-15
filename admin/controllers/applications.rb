@@ -19,6 +19,7 @@ Admin.controllers :applications do
 	    @application.url = params[:shared_data_application][:url]
 	    @application.redirect_url = params[:shared_data_application][:redirect_url]
 	    @application.description = params[:shared_data_application][:description]
+	    @application.public_key = params[:shared_data_application][:public_key]
 	    @application.secret = SecureRandom.hex(11)
 
 	    if(@application.save)
@@ -65,6 +66,7 @@ Admin.controllers :applications do
 	  @application.url = params[:shared_data_application][:url]
 	  @application.redirect_url = params[:shared_data_application][:redirect_url]
 	  @application.description = params[:shared_data_application][:description]
+	  @application.public_key = params[:shared_data_application][:public_key]
 	  @application.account = current_account
 	  
 	  if @application.update

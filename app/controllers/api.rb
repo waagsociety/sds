@@ -12,8 +12,9 @@ Sdsapp.controllers :api do
 	  if(body["grant_type"] == "authorization_code" && sda != nil && sda.secret == body["client_secret"])
 	  	
 		#2. find authorization for request token
-		pca = PersonalContextAuthorization.find_by_request_token(body[:code])
-	        	
+		puts "provided code: #{body["code"]}" 
+		pca = PersonalContextAuthorization.find_by_request_token(body["code"])
+		puts "found pca, state #{pca.state},provided: #{body[:code]} token: #{pca.request_token}"		
 		##validate client authorized and that the state is 'in request'
 		puts pca.client_id
 		puts sda.id
@@ -42,15 +43,19 @@ Sdsapp.controllers :api do
 		#make json can parse the data as a hash
 		document = params.first.first
 		data = JSON.parse document
-		#puts data
+		puts data.inspect
 
 		pca = PersonalContextAuthorization.find_by_access_token(token)
-
+		
+		
+	
 		if(document != nil && pca != nil && pca.state == AuthorizationState::ACCESS_GRANTED)
+			#1.store clear text document
 			store = PersonalStore.find_by_account_id(pca.resource_owner_id)
 			id = store.persist(data, pca.scope.context)
 
-			#get anonymized version of the document
+			#2.create anonymized version of the document, by transformation
+			#
 			anonimized_data = store.anonimize(pca.scope.context,id)
 			
 			#get reference to the context store
@@ -62,6 +67,34 @@ Sdsapp.controllers :api do
 			end
 
 			cstore.persist anonimized_data	#save some public data in the context store
+			puts "YO"
+			#3. now encrypt the personal data
+			#
+			client = SharedDataApplication.get(pca.client_id)
+			puts client.public_key
+			#3a. create random symmetric encryption key
+			secret_key = SecureRandom.hex(11) 
+			puts "secret key: #{secret_key}"
+
+			#3b. symetrically encrypt the message
+			
+			data.each do |key,value|
+				if(key == "_id")
+					next
+				end
+				data[key] = Base64.encode64(Encryptor.encrypt(value, :key => secret_key))
+			end
+			puts "encrypted message: #{data.inspect}"
+
+			#3c. encrypt symmetric key with public key of client
+			public_key = OpenSSL::PKey::RSA.new client.public_key
+			ciphertext = public_key.public_encrypt(secret_key)
+			safe = Base64.encode64(ciphertext)
+			puts "encrypted key: #{safe}"
+			data["cipher"] = safe
+			
+			#3d. update the data
+			store.update(id,data)
 
 		else
 			halt 422, "no valid token" 
@@ -78,7 +111,8 @@ Sdsapp.controllers :api do
 		        list = store.list(application, pca.scope.context)
 			response = ""
 			list.each do |doc|
-				response << "#{doc}\n"
+				json = doc.to_json	
+				response << "#{json}\n"
 			end
 			return response
 		else

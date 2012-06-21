@@ -46,18 +46,20 @@ Sdsapp.controllers :api do
 		puts data.inspect
 
 		pca = PersonalContextAuthorization.find_by_access_token(token)
-		
-		
 	
 		if(document != nil && pca != nil && pca.state == AuthorizationState::ACCESS_GRANTED)
-			#1.store clear text document
 			store = PersonalStore.find_by_account_id(pca.resource_owner_id)
-			id = store.persist(data, pca.scope.context)
+			
+			#1.store clear text document in temp db
+			#id = store.persist(data, pca.scope.context)
+			id = TempDatabase.persist(data,pca.scope.context)
 
 			#2.create anonymized version of the document, by transformation
-			#
-			anonimized_data = store.anonimize(pca.scope.context,id)
+			anonimized_data = TempDatabase.anonimize(pca.scope.context,id)
 			
+			#delete temp database
+		 	TempDatabase.proxy_database(pca.scope.context).delete!	
+				
 			#get reference to the context store
 			sdc = SharedDataContext.find_by_name pca.scope.context
 			cstore = ContextStore.find_by_shared_data_context_id sdc
@@ -67,7 +69,6 @@ Sdsapp.controllers :api do
 			end
 
 			cstore.persist anonimized_data	#save some public data in the context store
-			puts "YO"
 			#3. now encrypt the personal data
 			#
 			client = SharedDataApplication.get(pca.client_id)
@@ -93,8 +94,8 @@ Sdsapp.controllers :api do
 			puts "encrypted key: #{safe}"
 			data["cipher"] = safe
 			
-			#3d. update the data
-			store.update(id,data)
+			#3d.persist the encrypted data
+			store.persist(data,pca.scope.context)
 
 		else
 			halt 422, "no valid token" 

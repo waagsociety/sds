@@ -1,0 +1,28 @@
+Instructions for using SDS
+
+Preparations:
+
+i. Register a user as store owner
+
+ii. Register a user as developer
+
+iii. As developer, create a data context
+	Fill in the appropriate couchdb js functions, and data examples.
+	For couchdb function syntax, see the examples in public.js, private.js and anon.js	
+		
+iv. As developer, register an application with the context you created in 3.
+	#rsa encryption (asymmetric) of random encryption key
+	key_pair = OpenSSL::PKey::RSA.generate(1024) create a key pair and save your public key with the application registration.
+
+Now create an appication that uses oauth to get an access token, to save and read data on behalf of a user.
+See the client scripts in the client directory for example.
+
+1. Kick off the authorization process by directing the end user to: /oauth/authorize?client_id=$client&redirect=$redirect (see client/authorize.sh)
+
+2. After the end users grants access, swap the received request token for an access token, by posting a request to /api/oauth/token, (see client/get_access_token.sh
+
+3. Now that you have received an access token, store a valid json document for the user/context by posting a request to /api/store, providing the token in the header. (see client/store.sh)
+
+4. Retrieve documents for a user/context by calling /api/list, providing the token in the header. The response will contain encrypted values. To get the clear values, start by decrypting the cipher with your private 1024 bit rsa key. Then use that key (aes-256-cbc) to decrypt the values. (see client/get_doc.rb) 
+
+5. To retrieve all public documents for a context, simply call /api/context/{contextname}, see client/get_public_doc.sh

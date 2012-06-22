@@ -6,7 +6,7 @@ git,curl,rvm,couchdb
 sudo apt-get install couchdb
 
 1. clone de repository (zorg dat je access hebt dmv private key) 
-git clone git clone gitolite@wg33.waag.org:sds
+git clone gitolite@wg33.waag.org:sds
 
 2. installeer en activeer de juiste versie van ruby via rvm (zie rvm.io)
 rvm install openssl

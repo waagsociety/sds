@@ -17,6 +17,7 @@ Sdsapp.controllers :api do
 		puts "found pca, state #{pca.state},provided: #{body[:code]} token: #{pca.request_token}"		
 		##validate client authorized and that the state is 'in request'
 		puts pca.client_id
+		puts pca.resource_owner_id
 		puts sda.id
 		if(pca != nil && pca.client_id == sda.id && pca.state == AuthorizationState::PENDING_REQUEST)
 			
@@ -39,15 +40,21 @@ Sdsapp.controllers :api do
 	#the token indicates the application, context etc
 	post 'store' do
 		token = env["HTTP_AUTHORIZATION"].split.last
+		puts "using token: #{token}"
 		
 		#make json can parse the data as a hash
 		document = params.first.first
 		data = JSON.parse document
 		puts data.inspect
-
+		
+		#hmm not the right way to find the correct token?
 		pca = PersonalContextAuthorization.find_by_access_token(token)
 	
 		if(document != nil && pca != nil && pca.state == AuthorizationState::ACCESS_GRANTED)
+			
+			puts "pca.resource_owner_id: #{pca.resource_owner_id}"
+			#wtf this shouldn't be empty
+	
 			store = PersonalStore.find_by_account_id(pca.resource_owner_id)
 			
 			#1.store clear text document in temp db

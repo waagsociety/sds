@@ -54,7 +54,8 @@ Admin.controllers :authorization do
 					:level => ["private","public"]), 
 				:state => AuthorizationState::PENDING_REQUEST, 
 				:request_token => SecureRandom.hex(11),
-				:access_token => SecureRandom.hex(11)
+				:access_token => SecureRandom.hex(11),
+				:resource_owner => @account
 			)
 			#state stays pending until token is swapped
 			pca.save

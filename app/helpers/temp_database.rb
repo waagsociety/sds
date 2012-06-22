@@ -63,6 +63,6 @@ class TempDatabase
 	end
 
 	def self.proxy_database(context)
-		CouchRest.database! "http://taco:couchdb@localhost:5984/ps_#{context}"
+		CouchRest.database! "#{Sdsapp.couch_base}ps_#{context}"
 	end
 end

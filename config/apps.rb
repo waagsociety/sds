@@ -28,6 +28,7 @@
 Padrino.configure_apps do
   # enable :sessions
   set :session_secret, '62626fae0f351d4c23efea3aa0fdb2c2b6124aacd9c179bdce0bfd401f9a2b0e'
+  set :couch_base, 'http://localhost:5984/'
 end
 
 # Mounts the core application for this project

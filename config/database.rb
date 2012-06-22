@@ -1,5 +1,5 @@
 case Padrino.env
-  when :development then db_name = 'http://taco:couchdb@localhost:5984/sdsapp_development'
+  when :development then db_name = 'http://localhost:5984/sdsapp_development'
   when :production  then db_name = 'sdsapp_production'
   when :test        then db_name = 'sdsapp_test'
 end

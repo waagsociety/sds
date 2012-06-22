@@ -20,9 +20,7 @@ class PersonalStore < CouchRest::Model::Base
   #create the proxy database
   #use this manually
   def proxy_database
-	#TODO: refactor to yml or something
-	#this creates the personal database if it doesn't exist
-	CouchRest.database! "http://taco:couchdb@localhost:5984/ps_#{id}"
+	CouchRest.database! "#{Sdsapp.couch_base}ps_#{id}"
   end
 
   #gets the anonimized version of a document in the personal store
@@ -31,7 +29,9 @@ class PersonalStore < CouchRest::Model::Base
 	doc = proxy_database.view("#{context}/anonimization",:key => doc_id)["rows"].first["value"]
   end
 
-  def update(id,new_data)
+  #deprecated
+  def update_doc(id,new_data)
+	puts "update_doc"
 	orig_data = proxy_database.get(id)
 	new_data.each do | key,value |
 		orig_data[key] = new_data[key]

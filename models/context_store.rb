@@ -10,10 +10,8 @@ class ContextStore < CouchRest::Model::Base
 
 	view_by :shared_data_context_id
 
-	#TODO: refactor to yml or somethinga
-	#TODO: maybe change url to name of context?	
 	def proxy_database
-		CouchRest.database! "http://taco:couchdb@localhost:5984/cs_#{id}"
+		CouchRest.database! "#{Sdsapp.couch_base}cs_#{id}"
 	end
 
 	#this data comes from the anonimization function

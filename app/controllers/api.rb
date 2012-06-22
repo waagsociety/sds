@@ -60,7 +60,7 @@ Sdsapp.controllers :api do
 			#delete temp database
 		 	TempDatabase.proxy_database(pca.scope.context).delete!	
 				
-			#get reference to the context store
+			#get reference to the public context store
 			sdc = SharedDataContext.find_by_name pca.scope.context
 			cstore = ContextStore.find_by_shared_data_context_id sdc
 			if(cstore == nil)

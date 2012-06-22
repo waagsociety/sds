@@ -5,10 +5,15 @@
       %p.first
         %p.question= "Application '#{@application.name}' is asking for permission for read-write / private access to context: #{@context.name} "
       %p.description= " #{@context.name}: #{@application.description}"
-      %p.example= "Data collected in this context conforms to:<br/>"
-      %textarea(rows="8" cols="60")= "#{@context.private_validation}"
+      %p.example= "Data collected in this context is anonimized with:<br/>"
+      %textarea(rows="8" cols="60")= "#{@context.anonimization}"
       %hr
-
+      %p.example= "Example of private data that is stored encrypted: <br/>"
+      %textarea(rows="8" cols="60")= "#{@context.private_example}"
+      %hr
+      %p.example= "Example of public data used for aggregation: <br/>"
+      %textarea(rows="8" cols="60")= "#{@context.public_example}"
+      %hr
       -form_for :application, url(:authorization, :create), :class => :form do |f|
         .group.navform.wat-cf
           =f.submit pat(:grant), :class => :button

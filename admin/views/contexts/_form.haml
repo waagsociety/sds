@@ -37,7 +37,20 @@
     require("comment", "You may not leave an empty comment"); 
   </pre>
  
+  .group
+    =f.label "private data example"
+    =f.error_message_on :private_example
+    =f.text_area :private_example, :class => :text_area, :rows => 8
+    %span.description  Example of JSON document that will be persisted (encrypted) in the private store     
+  </pre>
 
+  .group
+    =f.label "public example"
+    =f.error_message_on :public_example 
+    =f.text_area :public_example, :class => :text_area, :rows => 8
+    %span.description Example of JSON document that will be persisted in the public store 
+  </pre>
+ 
 
 //
 //.group

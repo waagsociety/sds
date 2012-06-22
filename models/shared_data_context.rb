@@ -10,6 +10,8 @@ class SharedDataContext  < CouchRest::Model::Base
    property :public_validation, String #Design document json
    property :private_validation, String #Design document json
    property :anonimization, String #Design document json, contains js anon function
+   property :public_example, String
+   property :private_example, String
 
    # Validations
    validates_presence_of     :name, :public_validation, :private_validation, :anonimization

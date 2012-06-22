@@ -1,0 +1,27 @@
+SDS installatie instructies
+requirements:
+git,curl,rvm,couchdb
+
+0. installeer couchdb
+sudo apt-get install couchdb
+
+1. clone de repository (zorg dat je access hebt dmv private key) 
+git clone git clone gitolite@wg33.waag.org:sds
+
+2. installeer en activeer de juiste versie van ruby via rvm (zie rvm.io)
+rvm install openssl
+rvm install iconv
+rvm install 1.9.2 -C --with-openssl-dir=$HOME/.rvm/usr,--with-iconv-dir=$HOME/.rvm/usr
+rvm use ruby-1.9.2
+
+3. installeer padrino framework gem en dependencies in de Project dir
+cd sds
+bundle install (installeert alle gems op uit Gemfile.lock)
+
+4. configureer couchdb connectie
+edit config/database.rb (edit development url to point to couchdb instance)
+edit config/apps.rb (edit couch_base url to point to couchdb instance)
+
+5. run padrino
+padrino s 
+(of rvmsudo padrino s -p 80)

@@ -6,7 +6,7 @@ function(newDoc,oldDoc,userCtx)
 		if(!beTrue) throw({forbidden :message});
 	};
 
-	if(newDoc.type == "taxi_data)"
+	if(newDoc.type == "taxi_data")
 	{
 		//validation logic
 		require("comment","You may not leave an empty comment");
